@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.INFO)
 async def set_bot_commands(bot: Bot):
     commands = [
         BotCommand(command="start", description="Начать новый диалог"),
+        BotCommand(command="help", description="Справка о боте"),
         BotCommand(command="info", description="Службы помощи"),
     ]
     await bot.set_my_commands(commands)
