@@ -15,3 +15,7 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 # ML Models
 MODEL_PATH = os.getenv("MODEL_PATH", "/models/YandexGPT-5-Lite-8B-instruct-Q4_K_M.gguf")
 SENTIMENT_MODEL = os.getenv("SENTIMENT_MODEL", "blanchefort/rubert-base-cased-sentiment")
+
+# Admins (список Telegram ID через запятую)
+ADMINS_RAW = os.getenv("ADMINS", "")
+ADMINS = [int(x.strip()) for x in ADMINS_RAW.split(",") if x.strip().isdigit()]
