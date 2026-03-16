@@ -1,5 +1,32 @@
+# Secrets
 .env
 
+# Models
 models/YandexGPT-5-Lite-8B-instruct-Q4_K_M.gguf
 models/.DS_Store
+*.gguf
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
