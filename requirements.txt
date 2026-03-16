@@ -1,0 +1,22 @@
+# --- Core Framework ---
+aiogram>=3.26.0         # Асинхронный фреймворк для Telegram Bot API
+python-dotenv>=1.2.2    # Загрузка переменных окружения из .env
+
+# --- Database & ORM ---
+SQLAlchemy>=2.0.48      # Современная ORM (поддержка 2.0+)
+asyncpg>=0.31.0         # Асинхронный драйвер для PostgreSQL
+redis>=5.0.0            # Redis клиент для кэширования и сессий
+
+# --- AI & NLP ---
+llama-cpp-python>=0.3.16  # Загрузка и инференс GGUF моделей
+torch>=2.10.0           # Базовый фреймворк PyTorch
+transformers>=5.3.0    # Библиотека Hugging Face для NLP моделей
+
+
+# --- Testing ---
+pytest>=9.0.2           # Основной фреймворк для тестов
+pytest-asyncio>=1.3.0  # Поддержка асинхронных тестов в pytest
+
+# --- Utilities ---
+pydantic-settings>=2.13.1  # Для управления настройками приложения
+huggingface_hub>=1.6.0      # Для загрузки моделей с Hugging Face Hub
