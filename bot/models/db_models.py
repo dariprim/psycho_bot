@@ -79,7 +79,7 @@ class ContentItem(Base):
     description = Column(Text, nullable=True)
     
     # Дополнительные данные (автор, платформа, ссылка и т.д.)
-    metadata = Column(JSON, nullable=True, default=dict)
+    meta_data = Column(JSON, nullable=True, default=dict)
     
     # Для какого состояния рекомендуется
     stress_type = Column(String(50), nullable=False, index=True)

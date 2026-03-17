@@ -138,7 +138,7 @@ def get_random_content(stress_type: str = None,
             query = query.filter(ContentItem.stress_type == stress_type)
         if content_type:
             query = query.filter(
-                ContentItem.metadata['content_type'].astext == content_type
+                ContentItem.meta_data['content_type'].astext == content_type
             )
         
         count = query.count()
