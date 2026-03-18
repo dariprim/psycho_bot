@@ -6,11 +6,13 @@ python-dotenv>=1.2.2    # Загрузка переменных окружени
 SQLAlchemy>=2.0.48      # Современная ORM (поддержка 2.0+)
 asyncpg>=0.31.0         # Асинхронный драйвер для PostgreSQL
 redis>=5.0.0            # Redis клиент для кэширования и сессий
+psycopg2-binary>=2.9.11  # Драйвер для PostgreSQL 
 
 # --- AI & NLP ---
 llama-cpp-python>=0.3.16  # Загрузка и инференс GGUF моделей
 torch>=2.10.0           # Базовый фреймворк PyTorch
 transformers>=5.3.0    # Библиотека Hugging Face для NLP моделей
+
 
 
 # --- Testing ---
