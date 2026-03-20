@@ -3,20 +3,23 @@ from aiogram.filters import Command
 from bot.services.nlp import get_psychological_response
 from bot.utils.history import dialog_history
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from bot.services.recommender import get_recommendations, format_recommendations
+from bot.services.nlp import classify_state
+
 
 def get_main_keyboard():
     """Возвращает клавиатуру с основными командами."""
     keyboard = ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text="/start"), KeyboardButton(text="/info")]
-        ],
-        resize_keyboard=True,        # подгоняет размер под экран
-        one_time_keyboard=False,     # клавиатура остаётся после нажатия
-        input_field_placeholder="Выберите команду или напишите сообщение..."
+        keyboard=[[KeyboardButton(text="/start"), KeyboardButton(text="/info")]],
+        resize_keyboard=True,  # подгоняет размер под экран
+        one_time_keyboard=False,  # клавиатура остаётся после нажатия
+        input_field_placeholder="Выберите команду или напишите сообщение...",
     )
     return keyboard
 
+
 router = Router()
+
 
 @router.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -28,8 +31,9 @@ async def cmd_start(message: types.Message):
         "/help — справка о боте\n"
         "/info — службы помощи\n"
         "/start — начать новый диалог",
-        reply_markup=get_main_keyboard()
+        reply_markup=get_main_keyboard(),
     )
+
 
 @router.message(Command("help"))
 async def cmd_help(message: types.Message):
@@ -50,11 +54,10 @@ async def cmd_help(message: types.Message):
         "Если тебе нужна срочная помощь, используй команду /info"
     )
     await message.reply(
-        help_text,
-        parse_mode="Markdown",
-        reply_markup=get_main_keyboard()
+        help_text, parse_mode="Markdown", reply_markup=get_main_keyboard()
     )
-    
+
+
 @router.message(Command("info"))
 async def cmd_info(message: types.Message):
     info_text = (
@@ -70,9 +73,10 @@ async def cmd_info(message: types.Message):
     await message.reply(
         info_text,
         parse_mode="Markdown",
-        reply_markup=get_main_keyboard()  # возвращаем клавиатуру
+        reply_markup=get_main_keyboard(),  # возвращаем клавиатуру
     )
-    
+
+
 @router.message()
 async def handle_message(message: types.Message):
     text = message.text
@@ -81,12 +85,35 @@ async def handle_message(message: types.Message):
         await message.reply("Пожалуйста, напиши текстовое сообщение.")
         return
 
+    # --- Начало блока рекомендаций ---
+    # Импортируем вспомогательные функции (если ещё не импортированы в файл)
+    from bot.utils.helpers import contains_keywords, BOOK_KEYWORDS, MOVIE_KEYWORDS
+
+    # Проверка на запрос книг
+    if contains_keywords(text, BOOK_KEYWORDS):
+        state = classify_state(
+            text
+        )  # определит тип стресса (anxiety, stress, sadness, general)
+        results = get_recommendations("book", text, difficulty_name=state, limit=3)
+        response = format_recommendations(results, "book")
+        await message.reply(response, parse_mode="Markdown")
+        return
+
+    # Проверка на запрос фильмов/сериалов
+    if contains_keywords(text, MOVIE_KEYWORDS):
+        state = classify_state(text)
+        results = get_recommendations("movie", text, difficulty_name=state, limit=3)
+        response = format_recommendations(results, "movie")
+        await message.reply(response, parse_mode="Markdown")
+        return
+    # --- Конец блока рекомендаций ---
+
     # Получаем историю пользователя
     history = dialog_history.get_history(user_id)
 
     try:
         # Генерируем ответ с учётом истории
-        reply = get_psychological_response(text, history=history)  # нужно модифицировать функцию
+        reply = get_psychological_response(text, history=history)
     except Exception as e:
         reply = f"Извини, произошла ошибка: {e}"
     else:

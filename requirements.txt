@@ -7,6 +7,8 @@ SQLAlchemy>=2.0.48      # Современная ORM (поддержка 2.0+)
 asyncpg>=0.31.0         # Асинхронный драйвер для PostgreSQL
 redis>=5.0.0            # Redis клиент для кэширования и сессий
 psycopg2-binary>=2.9.11  # Драйвер для PostgreSQL 
+pgvector>=0.4.2         # Векторные расширения для PostgreSQL
+sentence-transformers>=5.3.0  # Модели для создания векторных представлений текста
 
 # --- AI & NLP ---
 llama-cpp-python>=0.3.16  # Загрузка и инференс GGUF моделей

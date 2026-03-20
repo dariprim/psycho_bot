@@ -19,7 +19,7 @@ class NLPProcessor:
         # Загружаем GGUF-модель для генерации
         self.llm = Llama(
             model_path=MODEL_PATH,
-            n_ctx=2048,  # контекст (макс. длина диалога)
+            n_ctx=1024,  # контекст (макс. длина диалога)
             n_threads=8,  # количество потоков CPU (можно увеличить)
             n_gpu_layers=1,  # 0 = только CPU
             verbose=False,

@@ -8,6 +8,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # Database
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://botuser:botpassword@localhost:5432/psychobot")
+EMBEDDING_MODEL_NAME = "cointegrated/rubert-tiny2"  # размерность 312
 
 # Redis (кэш, сессии, очереди)
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")

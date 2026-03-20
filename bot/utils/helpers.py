@@ -7,6 +7,8 @@ STRESS_KEYWORDS = {
     "sadness": ["груст", "печал", "тоск", "депресс", "уныни", "плохое настроение"],
 }
 
+MOVIE_KEYWORDS = ["фильм", "кино", "сериал", "посоветуй фильм", "что посмотреть", "кино на вечер"]
+
 def contains_keywords(text: str, keywords_list):
     text_lower = text.lower()
     return any(kw in text_lower for kw in keywords_list)
