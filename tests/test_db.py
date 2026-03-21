@@ -3,8 +3,8 @@ from bot.services.db import get_random_book, get_random_game
 from bot.models.db_models import Book
 
 def test_get_random_book_with_stress_type(db_session):
-    book1 = Book(title="Test1", author="A", description="Desc", stress_type="anxiety")
-    book2 = Book(title="Test2", author="B", description="Desc", stress_type="stress")
+    book1 = Book(title="Тонкое искусство пофигизма", author="Марк Мэнсон", description="О том, как перестать беспокоиться по пустякам и сосредоточиться на действительно важных вещах.", stress_type="anxiety")
+    book2 = Book(title="Компас эмоций", author="Илсе Санд", description="О том, как разобраться в своих чувствах и научиться ими управлять.", stress_type="stress")
     db_session.add_all([book1, book2])
     db_session.commit()
 
