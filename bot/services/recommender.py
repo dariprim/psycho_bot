@@ -3,11 +3,13 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from bot.config import DATABASE_URL
 from bot.services.embeddings import embedder
+from bot.utils.logger import recommender_logger, db_logger
 
 logger = logging.getLogger(__name__)
 
 # Кэш для mapping строковых состояний на id
 _difficulty_cache = None
+
 
 def _get_difficulty_map():
     global _difficulty_cache
@@ -20,37 +22,42 @@ def _get_difficulty_map():
         conn.close()
     return _difficulty_cache
 
+
 def get_difficulty_id(difficulty_name: str):
     if not difficulty_name:
         return None
     name_lower = difficulty_name.lower()
     return _get_difficulty_map().get(name_lower)
 
-def get_recommendations(content_type: str, query_text: str, difficulty_name: str = None, limit: int = 5):
+
+def get_recommendations(
+    content_type: str, query_text: str, difficulty_name: str = None, limit: int = 5
+):
     """
     content_type: 'book' или 'movie'
     """
     # 1. Получаем эмбеддинг запроса
     query_embedding = embedder.get_embedding(query_text)
+    db_logger.debug("Query embedding generated")
 
     # 2. Получаем difficulty_id (если задано)
     difficulty_id = get_difficulty_id(difficulty_name) if difficulty_name else None
 
     # 3. Определяем таблицу и поля
-    if content_type == 'book':
-        table = 'books'
-        title_field = 'title'
-        author_field = 'author'
-        id_field = 'id'
-        diff_table = 'books_difficulties'
-        fk_field = 'book_id'
-    elif content_type == 'movie':
-        table = 'movies'
-        title_field = 'title'
-        author_field = 'director'
-        id_field = 'id'
-        diff_table = 'movies_difficulty'
-        fk_field = 'movies_id'
+    if content_type == "book":
+        table = "books"
+        title_field = "title"
+        author_field = "author"
+        id_field = "id"
+        diff_table = "books_difficulties"
+        fk_field = "book_id"
+    elif content_type == "movie":
+        table = "movies"
+        title_field = "title"
+        author_field = "director"
+        id_field = "id"
+        diff_table = "movies_difficulty"
+        fk_field = "movies_id"
     else:
         raise ValueError("content_type must be 'book' or 'movie'")
 
@@ -92,28 +99,30 @@ def get_recommendations(content_type: str, query_text: str, difficulty_name: str
     results = cur.fetchall()
     cur.close()
     conn.close()
+    db_logger.info(f"Found {len(results)} results for {content_type}")
     return results
+
 
 def format_recommendations(results, content_type):
     """Форматирует результаты в читаемый текст для Telegram"""
     if not results:
         return "К сожалению, ничего не нашлось. Попробуйте переформулировать запрос."
 
-    if content_type == 'book':
-        title_key = 'title'
-        author_key = 'author'
+    if content_type == "book":
+        title_key = "title"
+        author_key = "author"
         type_name = "книг"
     else:
-        title_key = 'title'
-        author_key = 'director'
+        title_key = "title"
+        author_key = "director"
         type_name = "фильмов"
 
     response = f"📚 **Вот несколько {type_name}, которые могут вам подойти:**\n\n"
     for idx, r in enumerate(results, 1):
         title = r[title_key]
         author = r.get(author_key)
-        desc = r.get('description', '')
-        similarity = r.get('similarity', 0)  # можно не показывать
+        desc = r.get("description", "")
+        similarity = r.get("similarity", 0)  # можно не показывать
 
         response += f"{idx}. **{title}**"
         if author:
